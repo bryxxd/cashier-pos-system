@@ -1,4 +1,5 @@
 <template>
+
   <Head title="POS" />
   <AppLayout>
     <!-- Keyboard Shortcuts Banner -->
@@ -14,11 +15,8 @@
 
     <div class="flex items-center justify-between mb-4">
       <h2 class="text-2xl font-bold text-gray-800">POS</h2>
-      <button
-        @click="openPayment"
-        :disabled="cart.length === 0"
-        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium transition disabled:opacity-50 disabled:cursor-not-allowed"
-      >
+      <button @click="openPayment" :disabled="cart.length === 0"
+        class="bg-green-600 hover:bg-green-700 text-white px-6 py-2 rounded-md font-medium transition disabled:opacity-50 disabled:cursor-not-allowed">
         Payment
       </button>
     </div>
@@ -46,14 +44,8 @@
             <td class="px-4 py-2 text-sm text-gray-500">{{ item.alias || '—' }}</td>
             <td class="px-4 py-2 text-sm text-gray-900 text-right">{{ formatPrice(item.unit_price) }}</td>
             <td class="px-4 py-2">
-              <input
-                v-model.number="item.quantity"
-                type="number"
-                step="0.001"
-                min="0.001"
-                @input="recalculate"
-                class="w-20 px-2 py-1 text-sm text-center border rounded-md"
-              />
+              <input v-model.number="item.quantity" type="number" step="0.001" min="0.001" @input="recalculate"
+                class="w-20 px-2 py-1 text-sm text-center border rounded-md" />
             </td>
             <td class="px-4 py-2 text-sm text-gray-500 text-center">{{ item.unit }}</td>
             <td class="px-4 py-2 text-sm text-gray-900 text-right font-medium">{{ formatPrice(item.subtotal) }}</td>
@@ -63,37 +55,21 @@
           </tr>
 
           <!-- New item input row -->
-          <tr class="bg-gray-50">
+          <tr class="bg-gray-50 no-print">
             <td class="px-4 py-2">
-              <input
-                ref="barcodeInput"
-                v-model="newItem.barcode"
-                @keydown.enter.prevent="lookupByBarcode"
-                type="text"
-                placeholder="Scan barcode..."
-                class="w-full px-2 py-1 text-sm border rounded-md"
-              />
+              <input ref="barcodeInput" v-model="newItem.barcode" @keydown.enter.prevent="lookupByBarcode" type="text"
+                placeholder="Scan barcode..." class="w-full px-2 py-1 text-sm border rounded-md" />
             </td>
             <td class="px-4 py-2">
-              <select
-                ref="nameInput"
-                v-model="newItem.name"
-                @change="lookupByName"
-                class="w-full px-2 py-1 text-sm border rounded-md"
-              >
+              <select ref="nameInput" v-model="newItem.name" @change="lookupByName"
+                class="w-full px-2 py-1 text-sm border rounded-md">
                 <option value="">Choose product...</option>
                 <option v-for="p in products" :key="p.id" :value="p.name">{{ p.name }}</option>
               </select>
             </td>
             <td class="px-4 py-2">
-              <input
-                ref="aliasInput"
-                v-model="newItem.alias"
-                @keydown.enter.prevent="lookupByAlias"
-                type="text"
-                placeholder="Alias..."
-                class="w-full px-2 py-1 text-sm border rounded-md"
-              />
+              <input ref="aliasInput" v-model="newItem.alias" @keydown.enter.prevent="lookupByAlias" type="text"
+                placeholder="Alias..." class="w-full px-2 py-1 text-sm border rounded-md" />
             </td>
             <td colspan="5" class="px-4 py-2 text-sm text-gray-400 italic">
               Enter barcode, select product, or type alias
@@ -108,14 +84,8 @@
       <div class="flex flex-wrap items-center justify-end gap-6">
         <div class="flex items-center gap-2">
           <label class="text-sm font-medium text-gray-700">Discount %:</label>
-          <input
-            v-model.number="discount"
-            type="number"
-            min="0"
-            max="100"
-            @input="recalculate"
-            class="w-20 px-2 py-1 text-sm border rounded-md text-right"
-          />
+          <input v-model.number="discount" type="number" min="0" max="100" @input="recalculate"
+            class="w-20 px-2 py-1 text-sm border rounded-md text-right" />
         </div>
         <div class="text-xl font-bold text-gray-800">
           Total: <span class="text-green-600">{{ formatPrice(grandTotal) }}</span>
@@ -129,47 +99,33 @@
       <div class="space-y-4">
         <div>
           <label class="block text-lg font-semibold text-gray-700">Payable Amount</label>
-          <input
-            :value="formatPrice(grandTotal)"
-            type="text"
-            readonly
-            class="mt-1 w-full px-3 py-2 text-right text-lg border rounded-md bg-gray-50"
-          />
+          <input :value="formatPrice(grandTotal)" type="text" readonly
+            class="mt-1 w-full px-3 py-2 text-right text-lg border rounded-md bg-gray-50" />
         </div>
         <div>
           <label class="block text-lg font-semibold text-gray-700">Tendered Amount</label>
-          <input
-            ref="tenderInput"
-            v-model.number="tenderedAmount"
-            type="number"
-            step="0.01"
-            @input="calculateChange"
+          <input ref="tenderInput" v-model.number="tenderedAmount" type="number" step="0.01" @input="calculateChange"
             @keydown.enter.prevent="submitPayment"
-            class="mt-1 w-full px-3 py-2 text-right text-lg border rounded-md focus:ring-2 focus:ring-green-500"
-          />
+            class="mt-1 w-full px-3 py-2 text-right text-lg border rounded-md focus:ring-2 focus:ring-green-500" />
         </div>
         <div>
           <label class="block text-lg font-semibold text-gray-700">Change</label>
-          <input
-            :value="formatPrice(change)"
-            type="text"
-            readonly
+          <input :value="formatPrice(change)" type="text" readonly
             class="mt-1 w-full px-3 py-2 text-right text-lg border rounded-md"
-            :class="change < 0 ? 'bg-red-50 border-red-300 text-red-600' : 'bg-green-50 text-green-700'"
-          />
+            :class="change < 0 ? 'bg-red-50 border-red-300 text-red-600' : 'bg-green-50 text-green-700'" />
         </div>
       </div>
       <template #footer>
-        <button @click="showPaymentModal = false" class="px-4 py-2 text-sm border rounded-md hover:bg-gray-50">Close</button>
-        <button
-          @click="submitPayment"
-          :disabled="change < 0 || paymentProcessing"
-          class="px-6 py-2 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50"
-        >
+        <button @click="showPaymentModal = false"
+          class="px-4 py-2 text-sm border rounded-md hover:bg-gray-50">Close</button>
+        <button @click="submitPayment" :disabled="change < 0 || paymentProcessing"
+          class="px-6 py-2 text-sm bg-green-600 text-white rounded-md hover:bg-green-700 disabled:opacity-50">
           {{ paymentProcessing ? 'Processing...' : 'Save & Print' }}
         </button>
       </template>
     </Modal>
+
+    <Receipt :cart="cart" :grand-total="grandTotal" :discount="discount" class="print-area"/>
   </AppLayout>
 </template>
 
@@ -178,6 +134,7 @@ import { ref, computed, onMounted, onUnmounted, nextTick } from 'vue';
 import { Head, router } from '@inertiajs/vue3';
 import AppLayout from '@/Layouts/AppLayout.vue';
 import Modal from '@/Components/Modal.vue';
+import Receipt from '../../Components/Receipt.vue';
 
 const props = defineProps({
   products: Array,
@@ -383,9 +340,40 @@ onUnmounted(() => {
 </script>
 
 <style>
+.print-area {
+  visibility: hidden;
+}
+
 @media print {
-  nav, .bg-gray-800, button, input, select, .shadow { display: none !important; }
-  table { border-collapse: collapse; }
-  td, th { border: 1px solid #000; padding: 4px 8px; }
+  body * {
+    visibility: hidden;
+  }
+
+  .print-area,
+  .print-area * {
+    visibility: visible;
+  }
+
+  .print-area {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+  }
+
+  .print-area tr.no-print {
+    display: none;
+  }
+
+  table {
+    border-collapse: collapse;
+    width: 100%;
+  }
+
+  td,
+  th {
+    border: none;
+    padding: 4px 8px;
+  }
 }
 </style>
