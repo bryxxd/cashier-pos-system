@@ -1,7 +1,7 @@
 <template>
   <div class="min-h-screen bg-gray-100">
     <!-- Navbar -->
-    <nav class="bg-gray-800 text-white shadow-lg">
+    <nav v-if="!isPos" class="bg-gray-800 text-white shadow-lg">
       <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex items-center justify-between h-16">
           <div class="flex items-center space-x-8">
@@ -47,7 +47,7 @@
     </div>
 
     <!-- Page Content -->
-    <main class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6">
+    <main class="mx-auto px-4  sm:px-6 lg:px-8 py-6" :class="{ 'max-w-7xl' : !isPos}">
       <slot />
     </main>
   </div>
@@ -64,6 +64,7 @@ const auth = computed(() => page.props.auth);
 const flash = computed(() => page.props.flash);
 const currentRoute = computed(() => page.url);
 const isAdmin = computed(() => auth.value.user?.type === 'Administrator');
+const currentRounte = computed(() => page.url);
 
 function logout() {
   router.post('/logout');
@@ -72,4 +73,6 @@ function logout() {
 function dismissFlash() {
   page.props.flash.success = null;
 }
+
+const isPos = computed(() => currentRounte.value.startsWith('/pos'));
 </script>
