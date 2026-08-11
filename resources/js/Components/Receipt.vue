@@ -61,3 +61,5 @@ function formatPrice(price) {
         </div>
     </div>
 </template>
+<!-- test -->
+
